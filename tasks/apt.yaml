@@ -9,4 +9,4 @@
   vars:
     binaries: "{{ gateway_binaries }}"
   tags:
-  - apt
+    - apt
