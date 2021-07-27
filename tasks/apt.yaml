@@ -8,3 +8,5 @@
         - gateway_apt
   vars:
     binaries: "{{ gateway_binaries }}"
+  tags:
+  - apt
