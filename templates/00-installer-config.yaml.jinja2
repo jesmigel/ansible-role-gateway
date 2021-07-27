@@ -1,0 +1,25 @@
+# This is the network config written by 'subiquity'
+network:
+  version: 2
+  ethernets:
+
+# PUBLIC FACING ETHERNETS
+{% for nic in config.interfaces.public %}
+    {{ nic.name }}:
+      dhcp4: true
+      gateway4: {{ nic.gateway4 }}
+      nameservers:
+        addresses: {{ nic.nameservers.addresses }}
+
+{% endfor %}
+
+# PRIVATE INTERFACE
+{% for nic in config.interfaces.private %}
+    {{ nic.name }}:
+      addresses: [{{ nic.ipv4 }}/{{ nic.mask }}]
+      dhcp4: false
+      gateway4: {{ nic.gateway4 }}
+      nameservers:
+        addresses: {{ nic.nameservers.addresses }}
+
+{% endfor %}

@@ -1,0 +1,9 @@
+---
+- name: Update apt cache and Install binaries
+  import_tasks: apt.yaml
+
+- name: Initialise NTP configuration
+  import_tasks: datetime.yaml
+
+- name: Configure DHCP server
+  import_tasks: dhcp_server.yaml

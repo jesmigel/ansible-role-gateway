@@ -1,0 +1,12 @@
+---
+- hosts: all
+  vars_files:
+  - ./defaults/main.yaml
+  roles:
+  - {role: common, become: true, tags: common}
+  tasks:
+  - name: Test role as a playbook
+    become: true
+    import_tasks: tasks/main.yaml
+  handlers:
+  - include: handlers/main.yaml

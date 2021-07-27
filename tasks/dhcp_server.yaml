@@ -1,0 +1,136 @@
+# CONFIRM PUBLIC INTERFACE
+- fail: 
+    msg: Interface {{ item.name }} does not exist
+  when: item.name not in ansible_facts.interfaces
+  with_items: "{{ config.interfaces.public }}"
+  tags:
+    - dhcp_server
+    - validate
+
+# CONFIRM PRIVATE INTERFACE
+- fail: 
+    msg: Interface {{ item.name }} does not exist
+  when: item.name not in ansible_facts.interfaces
+  with_items: "{{ config.interfaces.private }}"
+  tags:
+    - dhcp_server
+    - validate
+
+# CREATE BACKUP
+- name: "Create backup for {{ config.templates.netplan.path }}{{ config.templates.netplan.file }}"
+  ansible.builtin.copy:
+    src: "{{ config.templates.netplan.path }}/{{ config.templates.netplan.file }}"
+    dest: "{{ config.templates.netplan.path }}/{{ config.templates.netplan.file }}.bkp"
+    mode: '0644'
+    remote_src: true
+  tags:
+    - dhcp_server
+    - netplan
+
+# UPDATE NETPLAN
+- name: "Generate {{ config.templates.netplan.path }}/{{ config.templates.netplan.file }} from template"
+  ansible.builtin.template:
+    src: "{{ config.templates.netplan.file }}.jinja2"
+    dest: "{{ config.templates.netplan.path }}/{{ config.templates.netplan.file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - dhcp_server
+    - netplan
+
+# VALIDATE NETPLAN
+- name: Validate by generating netlpan config
+  ansible.builtin.command: netplan generate
+  register: out_netplan
+  tags:
+    - dhcp_server
+    - netplan
+
+# APPLY NETPLAN
+- name: Apply Netplan config
+  ansible.builtin.command: netplan apply
+  when: out_netplan is succeeded
+  tags:
+    - dhcp_server
+    - netplan
+
+# CREATE BACKUP
+- name: "Create backup for {{ config.templates.isc_dhcp_server.path }}/{{ config.templates.isc_dhcp_server.file }}"
+  ansible.builtin.copy:
+    src: "{{ config.templates.isc_dhcp_server.path }}/{{ config.templates.isc_dhcp_server.file }}"
+    dest: "{{ config.templates.isc_dhcp_server.path }}/{{ config.templates.isc_dhcp_server.file }}.bkp"
+    mode: '0644'
+    remote_src: true
+  tags:
+    - dhcp_server
+    - isc_dhcp_server
+
+# CREATE FROM TEMPLATE
+- name: "Generate {{ config.templates.isc_dhcp_server.path }}/{{ config.templates.isc_dhcp_server.file }} from template"
+  ansible.builtin.template:
+    src: "{{ config.templates.isc_dhcp_server.file }}.jinja2"
+    dest: "{{ config.templates.isc_dhcp_server.path }}/{{ config.templates.isc_dhcp_server.file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - dhcp_server
+    - isc_dhcp_server
+
+# CREATE BACKUP
+- name: "Create backup for {{ config.templates.dhcpd.path }}/{{ config.templates.dhcpd.file }}"
+  ansible.builtin.copy:
+    src: "{{ config.templates.dhcpd.path }}/{{ config.templates.dhcpd.file }}"
+    dest: "{{ config.templates.dhcpd.path }}/{{ config.templates.dhcpd.file }}.bkp"
+    mode: '0644'
+    remote_src: true
+  tags:
+    - dhcp_server
+    - isc_dhcp_server
+
+# CREATE FROM TEMPLATE
+- name: "Generate {{ config.templates.dhcpd.path }}/{{ config.templates.dhcpd.file }} from template"
+  ansible.builtin.template:
+    src: "{{ config.templates.dhcpd.file }}.jinja2"
+    dest: "{{ config.templates.dhcpd.path }}/{{ config.templates.dhcpd.file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - dhcp_server
+
+# RESTART SERVICE
+- name: Start service isc-dhcp-server, if not started
+  ansible.builtin.service:
+    name: isc-dhcp-server
+    state: restarted
+    enabled: true
+  tags:
+    - dhcp_server
+
+# UPDATE KERNEL PARAMETER
+- name: Set ip forwarding on in /proc and verify token value with the sysctl command
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_file: /etc/sysctl.conf
+    sysctl_set: true
+    reload: true
+  tags:
+    - dhcp_server
+
+# UPDATE IP TABLE
+# sudo iptables -t nat -A POSTROUTING -o ens160 -j MASQUERADE
+# TODO: use isc_dhcp_server add rule for each private interface
+- name: Add a NAT forwarding rule to iptables
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: ens192
+    jump: MASQUERADE
+  become: true
+  tags:
+    - dhcp_server
+    - iptable
+

@@ -1,0 +1,10 @@
+---
+- name: Install gateway binaries
+  include_role:
+    name: common
+    tasks_from: apt.yaml
+    apply:
+      tags:
+        - gateway_apt
+  vars:
+    binaries: "{{ gateway_binaries }}"
