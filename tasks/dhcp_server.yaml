@@ -1,5 +1,6 @@
 # CONFIRM PUBLIC INTERFACE
-- fail: 
+- name: Confirm existence of public interfaces
+  fail:
     msg: Interface {{ item.name }} does not exist
   when: item.name not in ansible_facts.interfaces
   with_items: "{{ config.interfaces.public }}"
@@ -8,7 +9,8 @@
     - validate
 
 # CONFIRM PRIVATE INTERFACE
-- fail: 
+- name: Confirm existence of private interfaces
+  fail:
     msg: Interface {{ item.name }} does not exist
   when: item.name not in ansible_facts.interfaces
   with_items: "{{ config.interfaces.private }}"
@@ -133,4 +135,3 @@
   tags:
     - dhcp_server
     - iptable
-
