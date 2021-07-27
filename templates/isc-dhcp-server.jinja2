@@ -14,5 +14,5 @@
 
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
-INTERFACESv4="{{ config.isc_dhcp_server.nics | json_query('private[*].name') | join(' ') }}"
+INTERFACESv4="{{ config.interfaces | json_query('private[*].name') | join(' ') }}"
 INTERFACESv6=""

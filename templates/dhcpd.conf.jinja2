@@ -10,9 +10,6 @@
 # option domain-name "example.org";
 option domain-name-servers 8.8.8.8, 8.8.4.4;
 
-# option subnet-mask {{ config.dhcpd.mask }};
-# option broadcast-address {{ config.dhcpd.broadcast }};
-
 {% for nic in config.interfaces.private %}
 subnet {{ nic.subnet }} netmask {{ nic.mask_hex }} {
 option broadcast-address {{ nic.broadcast }};
