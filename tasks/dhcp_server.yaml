@@ -129,9 +129,10 @@
   ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
-    out_interface: ens192
+    out_interface: "{{ item.name }}"
     jump: MASQUERADE
   become: true
+  loop: "{{ config.interfaces.public }}"
   tags:
     - dhcp_server
     - iptable
