@@ -1,5 +1,5 @@
 # ansible-role-gateway
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![CI](https://github.com/jesmigel/ansible-role-gateway/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/jesmigel/ansible-role-gateway/actions/workflows/build.yaml)
 
 Ansible role for setting up a gateway host
 
