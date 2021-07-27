@@ -1,8 +1,8 @@
 gateway_binaries:
-- isc-dhcp-server
+  - isc-dhcp-server
 
 handler_list:
-- restart isc-dhcp-server
+  - restart isc-dhcp-server
 
 # DATETIME
 timezone: "Australia/Melbourne"
@@ -43,34 +43,3 @@ config:
         nameservers:
           addresses:
             - 192.168.1.2
-
-  dhcpd:
-    path: /etc/dhcp/dhcpd.conf
-    template: dhcpd.conf.jinja2
-    subnet: 10.0.0.0
-    mask: 255.255.255.0
-    broadcast: 10.0.0.255
-    range:
-      lower: 10.0.0.2
-      upper: 10.0.0.254
-    routers: 10.0.0.1
-
-  isc_dhcp_server:
-    path: /etc/default/isc-dhcp-server
-    template: isc-dhcp-server.jinja2
-    nics:
-      public:
-      - name: ens32
-        subnet: 192.168.1.0/24
-      private:
-      - name: ens192
-        subnet: 10.0.0.0/24
-
-  netplan:
-    path: /etc/netplan/00-installer-config.yaml
-    template: netplan.yaml.jinja2
-
-
-# nics:
-#   gateway:
-#     subnet: 
