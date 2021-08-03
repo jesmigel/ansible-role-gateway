@@ -21,6 +21,7 @@ config:
   interfaces:
     public:
       - name: ens32
+        dhcp4: false
         ipv4: 192.168.1.253
         subnet: 192.168.1.0
         gateway4: 192.168.1.1
@@ -32,6 +33,7 @@ config:
 
     private:
       - name: ens34
+        dhcp4: false
         ipv4: 10.0.0.1
         subnet: 10.0.0.0
         broadcast: 10.0.0.255
