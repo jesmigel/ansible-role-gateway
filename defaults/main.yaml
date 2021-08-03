@@ -21,6 +21,7 @@ config:
   interfaces:
     public:
       - name: ens32
+        ipv4: 192.168.1.253
         subnet: 192.168.1.0
         gateway4: 192.168.1.1
         mask: 24
