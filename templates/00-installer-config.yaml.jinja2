@@ -6,6 +6,7 @@ network:
 # PUBLIC FACING ETHERNETS
 {% for nic in config.interfaces.public %}
     {{ nic.name }}:
+      addresses: [{{ nic.ipv4 }}/{{ nic.mask }}]
       dhcp4: {{ nic.dhcp4 }}
       gateway4: {{ nic.gateway4 }}
       nameservers:
